@@ -854,38 +854,46 @@ module PermClerk
   def self.get_message(type, params = {})
     case type
     when :accountAge
-      "has had an account for <!-- mb-accountAge -->#{params[:accountAge]}<!-- mb-accountAge-end --> days"
-    when :articleCount
-      "has created roughly <!-- mb-articleCount -->#{params[:articleCount]}<!-- mb-articleCount-end --> [[WP:ARTICLE|article#{'s' if params[:articleCount] != 1}]]"
-    when :autoformat
+ log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"    when :articleCount
+ log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"    when :autoformat
       'An extraneous header or other inappropriate text was removed from this request'
     when :autorespond
-      "#{'is a sysop and' if params[:sysop]} already has #{params[:permission] == 'AutoWikiBrowser' ? 'AutoWikiBrowser access' : "the \"#{params[:permission]}\" user right"}"
-    when :temp_granted
+ log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"    when :temp_granted
       log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
         "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
       "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"
     when :autorespond_admin_forgot
-      "by {{no ping|#{params[:admin]}}}"
-    when :checkrevoked
+ log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"    when :checkrevoked
       "has had this permission revoked in the past #{@mb.config[:checkrevoked_config][:offset]} days (#{params[:revokedLinks]})"
     when :awb_autorevoked
-      "has had their access to AutoWikiBrowser automatically revoked (#{params[:revokedLinks]})"
-    when :editCount
-      "has <!-- mb-editCount -->#{params[:editCount]}<!-- mb-editCount-end --> total edits"
-    when :fetchdeclined
+ log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"    when :editCount
+ log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"    when :fetchdeclined
       "has had #{params[:numDeclined]} request#{'s' if params[:numDeclined].to_i > 1} for #{@permission.downcase} " \
         "declined in the past #{@mb.config[:fetchdeclined_config][:offset]} days (#{params[:declinedLinks]})"
     when :mainSpaceCount
-      "has <!-- mb-mainSpaceCount -->#{params[:mainSpaceCount]}<!-- mb-mainSpaceCount-end --> " \
-        "edit#{'s' if params[:mainSpaceCount] != 1} in the [[WP:MAINSPACE|mainspace]]"
+       log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"
     when :manualMainSpaceCount
-      "has approximately <!-- mb-manualMainSpaceCount -->#{params[:manualMainSpaceCount]}<!-- mb-manualMainSpaceCount-end --> " \
-        "[https://xtools.wmflabs.org/autoedits/en.wikipedia.org/#{URI.escape(params[:username].score)}" \
-        " non-automated edit#{'s' if params[:manualMainSpaceCount] != 1}] in the [[WP:MAINSPACE|mainspace]]"
+       log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"
     when :moduleSpaceCount
-      "has <!-- mb-moduleSpaceCount -->#{params[:moduleSpaceCount]}<!-- mb-moduleSpaceCount-end --> " \
-        "edit#{'s' if params[:moduleSpaceCount] != 1} in the [[WP:LUA|module namespace]]"
+      log_link = "#{@mb.gateway.wiki_url.chomp('api.php')}index.php?title=Special:Log&" \
+        "page=User:#{@username.score}&type=rights&offset=#{params[:granted]}&limit=1"
+      "was [#{log_link} granted] temporary #{params[:permission]} rights by {{no ping|#{params[:admin]}}} (expires #{@mb.wiki_date(params[:expiry])})<!-- mb-temp-perm -->"
     when :noSaidPermission
       if params[:permission] == 'autowikibrowser'
         "does not appear to have been added to the [[#{AWB_CHECKPAGE}|CheckPage]]<!-- mbNoPerm -->"
